@@ -1,0 +1,66 @@
+# ─── Secrets & environment ───────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.Python
+pip-wheel-metadata/
+*.pyo
+
+# ─── Django ──────────────────────────────────────────
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+media/
+staticfiles/
+static_collected/
+
+# ─── Virtual environments ─────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ─── Testing ─────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+nosetests.xml
+
+# ─── IDE / Editor ────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ─── Logs ────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Node (if any frontend tooling) ──────────────────
+node_modules/
+npm-debug.log*
+
+# ─── Docker ──────────────────────────────────────────
+*.env.docker
+
+# ─── Celery ──────────────────────────────────────────
+celerybeat-schedule
+celerybeat.pid

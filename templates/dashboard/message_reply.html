@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Reply to {{ contact_msg.name }}{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard · Messages</span>
+    <h1>Reply to {{ contact_msg.name }}</h1>
+    <p>Your reply will be sent directly to <strong>{{ contact_msg.email }}</strong> via your Gmail account.</p>
+  </div>
+
+  {# ── Original message ── #}
+  <div class="form-card" style="margin-bottom:20px; border-left:3px solid var(--brand-2);">
+    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+      <div>
+        <span style="font-weight:700; color:var(--text);">{{ contact_msg.name }}</span>
+        <span style="color:var(--muted); font-size:.87rem; margin-left:6px;">&lt;{{ contact_msg.email }}&gt;</span>
+      </div>
+      <span style="font-size:.8rem; color:var(--muted);">{{ contact_msg.created_at|date:"M d, Y · H:i" }}</span>
+    </div>
+    <p style="font-weight:600; color:var(--text); margin-bottom:10px;">{{ contact_msg.subject }}</p>
+    <div style="font-size:.9rem; color:var(--muted); line-height:1.75;">
+      {{ contact_msg.message|linebreaks }}
+    </div>
+  </div>
+
+  {# ── Reply form ── #}
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    <label for="reply_body" style="font-size:.85rem; font-weight:600; color:var(--muted); display:block; margin-bottom:6px;">
+      Your Reply
+    </label>
+    <textarea
+      name="reply_body"
+      id="reply_body"
+      rows="10"
+      required
+      placeholder="Write your reply here..."
+      style="width:100%; background:rgba(255,255,255,.04); border:1px solid var(--border);
+             border-radius:8px; color:var(--text); padding:12px; font-size:.95rem;
+             font-family:inherit; outline:none; resize:vertical; line-height:1.65;"
+    ></textarea>
+
+    <div style="display:flex; gap:10px; margin-top:16px; align-items:center;">
+      <button class="btn" type="submit">✉ Send Reply</button>
+      <a class="btn btn-secondary" href="{% url 'messages_inbox' %}">Cancel</a>
+      <span style="margin-left:auto; font-size:.82rem; color:var(--muted);">
+        Sending as: {{ request.user.email|default:"your configured Gmail" }}
+      </span>
+    </div>
+  </form>
+</section>
+{% endblock %}

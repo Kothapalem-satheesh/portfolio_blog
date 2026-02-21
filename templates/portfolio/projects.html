@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Projects – Kothapalem Satheesh{% endblock %}
+{% block content %}
+
+<section class="section container reveal">
+  <div style="display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:4px;">
+    <div class="section-head" style="margin-bottom:0;">
+      <span class="section-label">Portfolio</span>
+      <h1 class="gradient-text">My Projects</h1>
+      <p>Hands-on builds across AI systems, machine learning, and full-stack web engineering.</p>
+    </div>
+    <div class="lottie-wrap" style="width:150px; height:150px; flex-shrink:0;">
+      <lottie-player
+        src="https://lottie.host/a62cc99a-2b75-49c7-8cd5-5f8f1d9ce344/YE4LMKOh0X.json"
+        background="transparent" speed="1" loop autoplay
+        style="width:150px; height:150px;">
+      </lottie-player>
+    </div>
+  </div>
+
+  {# Stats row #}
+  <div class="proj-stats reveal">
+    <div class="proj-stat"><strong>{{ projects|length }}</strong> Total Projects</div>
+    <div class="proj-stat"><strong>{{ projects|length }}</strong> Builds Shipped</div>
+    <div class="proj-stat"><strong>Python · Django · ML</strong> Core Stack</div>
+  </div>
+
+  {% if user.is_staff %}
+    <div style="margin-bottom:28px;">
+      <a class="btn" href="{% url 'project_create' %}">➕ Add New Project</a>
+    </div>
+  {% endif %}
+
+  {# Tag filter bar #}
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Python">Python</button>
+    <button class="filter-btn" data-filter="Django">Django</button>
+    <button class="filter-btn" data-filter="FastAPI">FastAPI</button>
+    <button class="filter-btn" data-filter="ML">ML</button>
+    <button class="filter-btn" data-filter="React">React</button>
+    <button class="filter-btn" data-filter="JavaScript">JavaScript</button>
+  </div>
+
+  {# Project grid #}
+  <div class="proj-grid" id="projects-grid">
+    {% for project in projects %}
+      <article class="proj-card reveal" data-tags="{{ project.tech_stack|lower }}">
+
+        {% if project.featured %}
+          <span class="proj-featured-badge">⭐ Featured</span>
+        {% endif %}
+
+        {% if project.image %}
+          <div class="proj-card-img">
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" />
+          </div>
+        {% else %}
+          <div class="proj-card-img proj-card-img-placeholder">
+            <span>🛠</span>
+          </div>
+        {% endif %}
+
+        <div class="proj-card-body">
+          <h3>{{ project.title }}</h3>
+          <p>{{ project.summary }}</p>
+
+          {% if project.tech_stack %}
+            <div class="tech-tags" style="margin-top:10px;">
+              {% for tag in project.tech_stack.split %}
+                <span class="tech-tag">{{ tag|cut:"," }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div style="display:flex; gap:12px; margin-top:14px; flex-wrap:wrap; align-items:center;">
+            {% if project.source_url %}
+              <a class="card-source" href="{{ project.source_url }}" target="_blank" rel="noreferrer">↗ View Source</a>
+            {% endif %}
+            {% if project.demo_url %}
+              <a class="card-source" href="{{ project.demo_url }}" target="_blank" rel="noreferrer">🔗 Live Demo</a>
+            {% endif %}
+            {% if user.is_staff %}
+              <span style="margin-left:auto; display:flex; gap:8px;">
+                <a class="dash-btn" href="{% url 'project_edit' project.pk %}">Edit</a>
+                <a class="dash-btn danger" href="{% url 'project_delete' project.pk %}">Delete</a>
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <div class="card" style="grid-column:1/-1; text-align:center; padding:56px 32px;">
+        <p style="font-size:2rem; margin-bottom:12px;">🚧</p>
+        <p>No projects yet.</p>
+        {% if user.is_staff %}
+          <a class="btn" href="{% url 'project_create' %}" style="margin-top:16px; display:inline-flex;">Add your first project</a>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <p id="no-match" style="display:none; text-align:center; color:var(--muted); padding:40px 0;">
+    No projects match that filter.
+  </p>
+</section>
+
+{# CTA #}
+<section class="section container reveal">
+  <div class="cta-banner">
+    <div>
+      <h3>Want to collaborate on a project?</h3>
+      <p>I'm open to internships, open-source contributions, and freelance work.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn" href="{% url 'contact' %}">Get In Touch</a>
+      {% if site_profile.github_url %}
+        <a class="btn btn-secondary" href="{{ site_profile.github_url }}" target="_blank" rel="noreferrer">GitHub →</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const btns  = document.querySelectorAll(".filter-btn");
+  const cards = document.querySelectorAll("#projects-grid .proj-card");
+  const none  = document.getElementById("no-match");
+
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const filter = btn.dataset.filter.toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const tags = card.dataset.tags || "";
+        const show = filter === "all" || tags.includes(filter);
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      none.style.display = visible === 0 ? "block" : "none";
+    });
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<section class="section container narrow">
+  <h1>404</h1>
+  <p>The page you requested does not exist.</p>
+  <a class="btn" href="{% url 'home' %}">Back to home</a>
+</section>
+{% endblock %}

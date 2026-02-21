@@ -1,0 +1,16 @@
+Hi {{ name }},
+
+Thanks for reaching out! I received your message and will reply within 24–48 hours.
+
+Your Message (Copy)
+-------------------
+Subject: {{ subject }}
+
+{{ message }}
+
+---
+Explore my work:
+Projects: {{ site_url }}/projects/
+Blog:     {{ site_url }}/blog/
+
+— Kothapalem Satheesh

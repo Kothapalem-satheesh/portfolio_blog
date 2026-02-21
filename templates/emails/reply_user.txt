@@ -1,0 +1,14 @@
+Hi {{ name }},
+
+Thanks for getting in touch. Here's my reply:
+
+{{ reply_body }}
+
+---
+In reply to your original message (Subject: {{ subject }}):
+
+{{ original }}
+
+---
+Kothapalem Satheesh · AI/ML Student & Django Developer
+{{ site_url }}

@@ -1,0 +1,45 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}New Contact Message{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Portfolio</p>
+  <h1>📬 New Contact Message</h1>
+</div>
+
+<div class="body">
+  <p class="lead">Someone reached out through your portfolio contact form.</p>
+
+  <div class="info-box">
+    <p class="label">From</p>
+    <p class="value"><strong>{{ name }}</strong> &lt;{{ email }}&gt;</p>
+  </div>
+
+  <div class="info-box">
+    <p class="label">Subject</p>
+    <p class="value">{{ subject }}</p>
+  </div>
+
+  <div class="info-box">
+    <p class="label">Received</p>
+    <p class="value">{{ received_at }}</p>
+  </div>
+
+  <hr class="divider" />
+
+  <p class="label" style="font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#6d7dff; margin-bottom:8px;">Message</p>
+  <div class="message-box">{{ message }}</div>
+
+  <div class="btn-wrap">
+    <a class="btn" href="mailto:{{ email }}?subject=Re: {{ subject }}">Reply to {{ name }}</a>
+  </div>
+
+  <p style="text-align:center; font-size:13px;">You can also view all messages in your <a href="{{ site_url }}/dashboard/" style="color:#22c3ff;">Dashboard →</a></p>
+</div>
+
+<div class="footer">
+  <p>This message was sent via your portfolio contact form at <a href="{{ site_url }}">{{ site_url }}</a></p>
+  <p style="margin-top:6px;">Kothapalem Satheesh · AI/ML Student & Django Developer · Punjab, India</p>
+</div>
+
+{% endblock %}

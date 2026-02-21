@@ -1,0 +1,11 @@
+django>=5.1
+psycopg[binary]>=3.2
+dj-database-url>=2.2
+python-dotenv>=1.0
+whitenoise>=6.8
+celery>=5.4
+redis>=5.0
+gunicorn>=23.0
+openai>=1.55
+sendgrid>=6.11
+Pillow>=11.0

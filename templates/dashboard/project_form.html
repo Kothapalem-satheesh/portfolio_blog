@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Add Project{% else %}Edit Project{% endif %}{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard</span>
+    <h1>{% if is_create %}Add New Project{% else %}Edit "{{ project.title }}"{% endif %}</h1>
+    <p>Upload a screenshot or banner image for this project — it'll appear in the project cards on your site.</p>
+  </div>
+
+  {% if project and project.image %}
+    <div class="form-card" style="margin-bottom:16px; display:flex; align-items:center; gap:16px;">
+      <img src="{{ project.image.url }}" alt="{{ project.title }}"
+           style="width:120px; height:80px; object-fit:cover; border-radius:8px; border:1px solid var(--border);" />
+      <div>
+        <p style="color:var(--text); margin:0 0 4px;">Current image</p>
+        <p style="font-size:.82rem;">Upload a new file below to replace it.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button class="btn" type="submit">{% if is_create %}Add Project{% else %}Save Changes{% endif %}</button>
+      <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

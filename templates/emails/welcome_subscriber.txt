@@ -1,0 +1,18 @@
+You're subscribed to Kothapalem Satheesh's blog!
+=================================================
+
+Welcome aboard!
+
+You'll receive an email every time a new post is published on topics like:
+- Artificial Intelligence & Machine Learning
+- Django Backend Engineering
+- Python & Real-World Projects
+
+Explore my work:
+Projects: {{ site_url }}/projects/
+Blog:     {{ site_url }}/blog/
+
+---
+Unsubscribe: {{ unsubscribe_url }}
+Kothapalem Satheesh · AI/ML Student & Django Developer
+{{ site_url }}

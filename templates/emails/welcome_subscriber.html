@@ -1,0 +1,54 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}Welcome! You're subscribed to Kothapalem Satheesh's blog{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Blog</p>
+  <h1>🎉 You're Subscribed!</h1>
+</div>
+
+<div class="body">
+  <p class="lead">Welcome aboard!</p>
+  <p>
+    You're now subscribed to updates from <strong>Kothapalem Satheesh</strong> — AI/ML student,
+    Django developer, and Python engineer based in Punjab, India.
+  </p>
+
+  <hr class="divider" />
+
+  <p style="font-size:14px; font-weight:700; color:#c9d1d9; margin-bottom:10px;">What you'll receive:</p>
+
+  <div class="info-box" style="border-left-color:#22c3ff;">
+    <p class="label">📝 New Blog Posts</p>
+    <p class="value">Full article title, description, and a direct read link — delivered to your inbox whenever a new post goes live.</p>
+  </div>
+
+  <div class="info-box" style="border-left-color:#6d7dff;">
+    <p class="label">🤖 Topics I Write About</p>
+    <p class="value">Artificial Intelligence · Machine Learning · Django Backend · Python Engineering · Real-World Projects</p>
+  </div>
+
+  <hr class="divider" />
+
+  <p>While you wait for the first post, explore what I've built:</p>
+
+  <div class="btn-wrap">
+    <a class="btn" href="{{ site_url }}/projects/">View My Projects</a>
+  </div>
+
+  <p style="text-align:center; margin-top:14px; font-size:13px;">
+    Or read existing posts at <a href="{{ site_url }}/blog/" style="color:#22c3ff;">{{ site_url }}/blog/</a>
+  </p>
+</div>
+
+<div class="footer">
+  <p>You subscribed at <a href="{{ site_url }}">{{ site_url }}</a></p>
+  <p style="margin-top:8px;">
+    <a href="{{ unsubscribe_url }}">Unsubscribe anytime</a> ·
+    <a href="{{ site_url }}/projects/">Projects</a> ·
+    <a href="{{ site_url }}/blog/">Blog</a>
+  </p>
+  <p style="margin-top:6px;">Kothapalem Satheesh · AI/ML Student & Django Developer · Punjab, India</p>
+</div>
+
+{% endblock %}

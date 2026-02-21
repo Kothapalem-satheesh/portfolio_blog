@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard</span>
+    <h1>Edit Profile</h1>
+    <p>Update your name, title, bio, photo, and social links shown across the site.</p>
+  </div>
+
+  {% if profile and profile.photo %}
+    <div class="form-card" style="margin-bottom:16px; display:flex; align-items:center; gap:16px;">
+      <img src="{{ profile.photo.url }}" alt="Current photo"
+           style="width:90px; height:90px; object-fit:cover; border-radius:50%; border:2px solid var(--brand-2);" />
+      <div>
+        <p style="color:var(--text); margin:0 0 4px; font-weight:600;">Current profile photo</p>
+        <p style="font-size:.82rem;">Upload a new photo below to replace it.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button class="btn" type="submit">Save Changes</button>
+      <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

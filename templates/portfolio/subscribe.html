@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Subscribe – Kothapalem Satheesh{% endblock %}
+
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Stay in the Loop</span>
+    <h1 class="gradient-text">Subscribe to Blog Updates</h1>
+    <p>
+      Get an email whenever I publish something new — AI, Machine Learning,
+      Django engineering, or real-world Python projects. No spam, ever.
+      <strong>Unsubscribe anytime in one click.</strong>
+    </p>
+  </div>
+
+  {% if messages %}
+    <div class="flash-stack" style="max-width:520px; margin:0 auto 20px;">
+      {% for msg in messages %}
+        <div class="flash {% if msg.tags %}{{ msg.tags }}{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="post" class="form-card subscribe-card">
+    {% csrf_token %}
+    <div class="subscribe-perks">
+      <div class="perk-item">
+        <span class="perk-icon">📝</span>
+        <span>New post title &amp; description straight to your inbox</span>
+      </div>
+      <div class="perk-item">
+        <span class="perk-icon">🤖</span>
+        <span>AI · ML · Django · Python topics</span>
+      </div>
+      <div class="perk-item">
+        <span class="perk-icon">✅</span>
+        <span>Instantly subscribed — no verification step needed</span>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;">
+      {{ form.email }}
+      <button class="btn" type="submit" style="white-space:nowrap;">
+        Subscribe Free →
+      </button>
+    </div>
+
+    <p style="font-size:12px; color:var(--text-muted); margin-top:10px; text-align:center;">
+      We respect your privacy. Unsubscribe at any time.
+    </p>
+  </form>
+</section>
+{% endblock %}

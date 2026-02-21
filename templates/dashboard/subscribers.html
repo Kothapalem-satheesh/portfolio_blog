@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Subscribers – Dashboard{% endblock %}
+{% block content %}
+<section class="section container reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard</span>
+    <h1>Subscribers</h1>
+    <p>
+      <strong style="color:var(--brand-2);">{{ active_count }}</strong> active &nbsp;·&nbsp;
+      <strong style="color:var(--muted);">{{ inactive_count }}</strong> inactive
+    </p>
+  </div>
+
+  <div style="margin-bottom:24px;">
+    <a class="btn btn-secondary" href="{% url 'dashboard' %}">← Back to Dashboard</a>
+  </div>
+
+  {# ── Add subscriber directly ── #}
+  <div class="form-card" style="margin-bottom:28px;">
+    <h3 style="color:var(--text); margin-bottom:12px;">Add Subscriber Directly</h3>
+    <p style="margin-bottom:14px;">Add an email as an active subscriber — no verification email sent. Useful for adding yourself or trusted contacts.</p>
+    <form method="post" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      {% csrf_token %}
+      <input type="email" name="email" required placeholder="email@example.com"
+             style="flex:1; min-width:220px; background:rgba(255,255,255,.04); border:1px solid var(--border);
+                    border-radius:8px; color:var(--text); padding:10px 14px; font-size:.95rem;
+                    font-family:inherit; outline:none;" />
+      <button class="btn" type="submit">Add Subscriber</button>
+    </form>
+  </div>
+
+  {# ── Subscriber list ── #}
+  {% if subscribers %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Subscribed</th>
+            <th>Verified</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in subscribers %}
+            <tr>
+              <td style="font-weight:500;">{{ sub.email }}</td>
+              <td>
+                {% if sub.is_active %}
+                  <span class="status-badge published">Active</span>
+                {% else %}
+                  <span class="status-badge draft">Inactive</span>
+                {% endif %}
+              </td>
+              <td>{{ sub.created_at|date:"M d, Y" }}</td>
+              <td>{{ sub.verified_at|date:"M d, Y"|default:"—" }}</td>
+              <td class="dash-row-actions">
+                <form method="post" action="{% url 'subscriber_toggle' sub.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button class="dash-btn" type="submit">
+                    {% if sub.is_active %}Deactivate{% else %}Activate{% endif %}
+                  </button>
+                </form>
+                <form method="post" action="{% url 'subscriber_delete' sub.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button class="dash-btn danger" type="submit"
+                          onclick="return confirm('Remove {{ sub.email }}?')">
+                    Remove
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card" style="text-align:center; padding:48px 32px;">
+      <p style="font-size:2rem; margin-bottom:12px;">📭</p>
+      <p>No subscribers yet. Add one above or share your <a href="{% url 'subscribe' %}">subscribe page</a>.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

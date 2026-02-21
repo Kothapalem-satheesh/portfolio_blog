@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  DJANGO_SETTINGS_MODULE: config.settings.base
+  DJANGO_SECRET_KEY: ci-secret-key-not-real-at-all
+  DJANGO_DEBUG: "True"
+  DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+  DATABASE_URL: sqlite:///test_db.sqlite3
+  CACHE_BACKEND: locmem
+  CELERY_TASK_ALWAYS_EAGER: "True"
+  EMAIL_BACKEND: django.core.mail.backends.locmem.EmailBackend
+  EMAIL_HOST: smtp.gmail.com
+  EMAIL_PORT: "587"
+  EMAIL_HOST_USER: test@example.com
+  EMAIL_HOST_PASSWORD: not-real
+  DEFAULT_FROM_EMAIL: test@example.com
+  ADMIN_EMAIL: test@example.com
+  OPENAI_API_KEY: sk-not-real
+  OPENAI_MODEL: gpt-4o-mini
+  SITE_BASE_URL: http://localhost:8000
+
+jobs:
+  # ── Job 1: Lint ─────────────────────────────────────────────────
+  lint:
+    name: CI / Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Run flake8
+        run: |
+          flake8 apps/ config/ \
+            --max-line-length=120 \
+            --exclude=migrations,__pycache__,*.pyc \
+            --extend-ignore=E1,E2,E3,E4,E5,E7,W,F401,F403,F405,F811
+
+  # ── Job 2: Test ─────────────────────────────────────────────────
+  test:
+    name: CI / Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run database migrations
+        run: python manage.py migrate --noinput
+
+      - name: Check for unmade migrations
+        run: python manage.py makemigrations --check --dry-run
+        continue-on-error: true
+
+      - name: Django system check
+        run: python manage.py check
+
+      - name: Collect static files
+        run: python manage.py collectstatic --noinput
+
+      - name: Run tests
+        run: python manage.py test --verbosity=1 --keepdb

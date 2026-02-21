@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About – Kothapalem Satheesh{% endblock %}
+{% block content %}
+
+{# ─── ABOUT INTRO ──────────────────────────────────── #}
+<section class="section container">
+  <div class="section-head">
+    <span class="section-label">Who I Am</span>
+    <h1 class="gradient-text">About Me</h1>
+  </div>
+  <div class="about-intro">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:16px;" class="reveal-left visible">
+      {% if site_profile.photo and site_profile.photo.url %}
+        <img class="about-photo" src="{{ site_profile.photo.url }}" alt="{{ site_profile.full_name }}" />
+      {% else %}
+        <img class="about-photo" src="{% static 'images/profile-photo.png' %}" alt="{{ site_profile.full_name }}" />
+      {% endif %}
+      <div class="about-social">
+        <a href="{{ site_profile.github_url }}" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="{{ site_profile.linkedin_url }}" target="_blank" rel="noreferrer">LinkedIn</a>
+        {% if site_profile.twitter_url %}
+          <a href="{{ site_profile.twitter_url }}" target="_blank" rel="noreferrer">X / Twitter</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+      </div>
+    </div>
+    <div class="reveal-right visible">
+      <p class="about-bio">
+        {{ site_profile.about|default:"Computer Science undergraduate at Lovely Professional University, focused on Artificial Intelligence, Machine Learning, and full-stack backend development. I enjoy transforming real-world ideas into reliable web products and data-driven systems." }}
+      </p>
+      {# Quick info cards #}
+      <div class="about-info-row">
+        <div class="about-info-chip">
+          <span class="about-info-icon">📍</span>
+          <span>{{ site_profile.location|default:"Punjab, India" }}</span>
+        </div>
+        <div class="about-info-chip">
+          <span class="about-info-icon">📧</span>
+          <span>{{ site_profile.email|default:"satheeshyadav85@gmail.com" }}</span>
+        </div>
+        <div class="about-info-chip">
+          <span class="about-info-icon">💼</span>
+          <span>Open to Internships</span>
+        </div>
+        <div class="about-info-chip">
+          <span class="about-info-icon">🎓</span>
+          <span>AI/ML Student</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider container" />
+
+{# ─── EDUCATION ─────────────────────────────────────── #}
+<section class="section container reveal">
+  <div class="section-head">
+    <span class="section-label">Academic Background</span>
+    <h2>Education</h2>
+    <p>Strong quantitative and engineering foundation.</p>
+  </div>
+  <div class="timeline">
+    {% for item in education_items %}
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <p class="timeline-title">{{ item.degree }}</p>
+          <p class="timeline-sub">{{ item.institution }}</p>
+          <p class="timeline-period">
+            {{ item.start_year }} – {% if item.end_year %}{{ item.end_year }}{% else %}Present{% endif %}
+          </p>
+          {% if item.description %}
+            <p class="timeline-desc">{{ item.description }}</p>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p>Loading education data…</p>
+    {% endfor %}
+  </div>
+</section>
+
+<hr class="divider container" />
+
+{# Wave #}
+<div class="wave-divider" aria-hidden="true">
+  <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" height="48">
+    <path d="M0,24 C480,48 960,0 1440,24 L1440,48 L0,48 Z" fill="rgba(109,125,255,0.05)"/>
+  </svg>
+</div>
+
+{# ─── SKILLS ────────────────────────────────────────── #}
+<section class="section container reveal" style="position:relative;">
+  {# Animated AI Lottie — floats beside skill header #}
+  <div style="display:grid; grid-template-columns:1fr auto; gap:24px; align-items:center; margin-bottom:32px; flex-wrap:wrap;">
+    <div class="section-head" style="margin-bottom:0;">
+      <span class="section-label">Technical Stack</span>
+      <h2>Skills</h2>
+      <p>Technologies used in real internships, projects, and coursework.</p>
+    </div>
+    <div class="lottie-wrap" style="width:140px; height:140px; flex-shrink:0;">
+      <lottie-player
+        src="https://lottie.host/4db68bbd-6a5b-4b88-8ead-a5e6edd98c1c/GgGWNgSdLu.json"
+        background="transparent" speed="1" loop autoplay
+        style="width:140px; height:140px;">
+      </lottie-player>
+    </div>
+  </div>
+
+  {% regroup skills by category as skill_groups %}
+  {% if skill_groups %}
+    {% for group in skill_groups %}
+      {% if group.grouper %}
+        <p style="font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--brand-2); margin:24px 0 12px;">
+          {{ group.grouper }}
+        </p>
+      {% endif %}
+      <div class="skills-grid">
+        {% for skill in group.list %}
+          <div class="skill-item">
+            <div class="skill-header">
+              <span class="skill-name">{{ skill.name }}</span>
+              <span class="skill-pct">{{ skill.level }}%</span>
+            </div>
+            <div class="skill-bar-bg">
+              <div class="skill-bar-fill" data-level="{{ skill.level }}"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="skills-grid">
+      {% for skill in skills %}
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">{{ skill.name }}</span>
+            <span class="skill-pct">{{ skill.level }}%</span>
+          </div>
+          <div class="skill-bar-bg">
+            <div class="skill-bar-fill" data-level="{{ skill.level }}"></div>
+          </div>
+        </div>
+      {% empty %}
+        <p>Loading skills…</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<hr class="divider container" />
+
+{# ─── INTERNSHIPS ───────────────────────────────────── #}
+<section class="section container reveal">
+  <div class="section-head">
+    <span class="section-label">Experience</span>
+    <h2>Internships</h2>
+    <p>Industry experience building and improving real machine learning workflows.</p>
+  </div>
+  <div class="timeline">
+    {% for item in internships %}
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <p class="timeline-title">{{ item.role }}</p>
+          <p class="timeline-sub">{{ item.org }}</p>
+          <p class="timeline-period">{{ item.timeline }}</p>
+          <p class="timeline-desc">{{ item.details }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<hr class="divider container" />
+
+{# ─── ACHIEVEMENTS ──────────────────────────────────── #}
+<section class="section container reveal">
+  <div class="section-head">
+    <span class="section-label">Milestones</span>
+    <h2>Achievements</h2>
+    <p>Workshops, certifications, and campus contributions.</p>
+  </div>
+  <div class="achievements-grid">
+    {% for item in achievements %}
+      <div class="achievement-card">
+        <span class="achievement-icon">🏆</span>
+        <p>{{ item }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<hr class="divider container" />
+
+{# ─── CTA ──────────────────────────────────────────── #}
+<section class="section container reveal">
+  <div class="cta-banner">
+    <div>
+      <h3>Interested in working together?</h3>
+      <p>I'm actively looking for internships and real-world AI/ML opportunities.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn" href="{% url 'contact' %}">Get In Touch</a>
+      <a class="btn btn-secondary" href="{% url 'projects' %}">See My Work</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

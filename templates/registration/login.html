@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Welcome Back</span>
+    <h1>Log In</h1>
+    <p>Sign in to comment on posts and access member features.</p>
+  </div>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn" type="submit" style="margin-top:8px;">Login</button>
+  </form>
+  <p style="margin-top:16px; font-size:.9rem;">Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
+</section>
+{% endblock %}

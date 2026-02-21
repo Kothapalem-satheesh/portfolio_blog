@@ -1,0 +1,51 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}We received your message{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Portfolio</p>
+  <h1>✅ Message Received!</h1>
+</div>
+
+<div class="body">
+  <p class="lead">Hi <strong>{{ name }}</strong>,</p>
+  <p>
+    Thanks for reaching out! I've received your message and will get back to you as soon as possible —
+    usually within 24–48 hours.
+  </p>
+
+  <hr class="divider" />
+
+  <p class="label" style="font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#6d7dff; margin-bottom:12px;">Your Message (Copy)</p>
+
+  <div class="info-box">
+    <p class="label">Subject</p>
+    <p class="value">{{ subject }}</p>
+  </div>
+
+  <div class="message-box">{{ message }}</div>
+
+  <hr class="divider" />
+
+  <p>While you wait, feel free to explore my work:</p>
+
+  <div class="btn-wrap">
+    <a class="btn" href="{{ site_url }}/projects/">View My Projects</a>
+  </div>
+
+  <p style="text-align:center; margin-top:16px; font-size:13px;">
+    Or read my <a href="{{ site_url }}/blog/" style="color:#22c3ff;">latest blog posts →</a>
+  </p>
+</div>
+
+<div class="footer">
+  <p>You're receiving this because you submitted the contact form at <a href="{{ site_url }}">{{ site_url }}</a></p>
+  <p style="margin-top:6px;">Kothapalem Satheesh · AI/ML Student & Django Developer · Punjab, India</p>
+  <p style="margin-top:6px;">
+    <a href="{{ site_url }}/projects/">Projects</a> ·
+    <a href="{{ site_url }}/blog/">Blog</a> ·
+    <a href="{{ site_url }}/contact/">Contact</a>
+  </p>
+</div>
+
+{% endblock %}

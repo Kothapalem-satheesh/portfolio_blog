@@ -1,0 +1,62 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}New Post: {{ post.title }}{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Blog</p>
+  <h1>📝 New Post Published</h1>
+</div>
+
+<div class="body">
+  <p class="lead">Hey there 👋 — I just published a new article on my blog!</p>
+
+  {% if post.cover_image %}
+    <div style="margin: 20px 0; border-radius: 10px; overflow: hidden; border: 1px solid #21262d;">
+      <img src="{{ site_url }}{{ post.cover_image.url }}" alt="{{ post.title }}"
+           style="width:100%; max-height:260px; object-fit:cover; display:block;" />
+    </div>
+  {% endif %}
+
+  <div class="info-box" style="border-left-color:#22c3ff;">
+    <p class="label">Article Title</p>
+    <p class="value" style="font-size:18px; font-weight:700; color:#e8ebff;">{{ post.title }}</p>
+  </div>
+
+  {% if post.category %}
+    <div style="margin: 12px 0;">
+      <span class="tag">{{ post.category.name }}</span>
+    </div>
+  {% endif %}
+
+  {% if post.tags %}
+    <div style="margin: 8px 0 16px;">
+      {% for tag in post.tags.split %}
+        <span class="tag">{{ tag|cut:"," }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <p>{{ post.excerpt|default:post.content|truncatewords:60 }}</p>
+
+  <div class="btn-wrap">
+    <a class="btn" href="{{ post_url }}">Read Full Article →</a>
+  </div>
+
+  <hr class="divider" />
+
+  <p style="font-size:13px; text-align:center;">
+    Browse all posts at <a href="{{ site_url }}/blog/" style="color:#22c3ff;">{{ site_url }}/blog/</a>
+  </p>
+</div>
+
+<div class="footer">
+  <p>You're receiving this because you subscribed to blog updates at <a href="{{ site_url }}">{{ site_url }}</a></p>
+  <p style="margin-top:8px;">
+    <a href="{{ unsubscribe_url }}">Unsubscribe</a> ·
+    <a href="{{ site_url }}/projects/">Projects</a> ·
+    <a href="{{ site_url }}/contact/">Contact</a>
+  </p>
+  <p style="margin-top:6px;">Kothapalem Satheesh · AI/ML Student & Django Developer · Punjab, India</p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}Confirm your subscription{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Blog</p>
+  <h1>📧 Confirm Your Subscription</h1>
+</div>
+
+<div class="body">
+  <p class="lead">You're one click away from receiving my latest posts on AI, ML, and Django!</p>
+  <p>Click the button below to confirm your email address and activate your subscription.</p>
+
+  <div class="btn-wrap" style="margin-top:32px;">
+    <a class="btn" href="{{ verify_link }}">Confirm Subscription →</a>
+  </div>
+
+  <hr class="divider" />
+
+  <p style="font-size:13px; text-align:center; color:#484f58;">
+    If the button doesn't work, copy this link into your browser:<br />
+    <a href="{{ verify_link }}" style="color:#22c3ff; word-break:break-all;">{{ verify_link }}</a>
+  </p>
+  <p style="font-size:12px; text-align:center; color:#484f58; margin-top:12px;">
+    If you didn't subscribe, you can safely ignore this email.
+  </p>
+</div>
+
+<div class="footer">
+  <p>Kothapalem Satheesh · AI/ML Student & Django Developer</p>
+  <p style="margin-top:6px;"><a href="{{ site_url }}">{{ site_url }}</a></p>
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Write New Post{% else %}Edit "{{ post.title }}"{% endif %}{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Blog</span>
+    <h1>{% if is_create %}Write New Post{% else %}Edit Post{% endif %}</h1>
+    <p>
+      Set status to <strong>Published</strong> to make it live.
+      {% if not is_create %}<a href="{{ post.get_absolute_url }}">View post →</a>{% endif %}
+    </p>
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+      <button class="btn" type="submit">
+        {% if is_create %}Publish / Save Draft{% else %}Save Changes{% endif %}
+      </button>
+      <a class="btn btn-secondary" href="{% url 'blog_list' %}">Cancel</a>
+      {% if not is_create %}
+        <a class="btn btn-secondary" href="{% url 'blog_delete' post.slug %}"
+           style="border-color:#ef4444; color:#ef4444;">Delete Post</a>
+      {% endif %}
+    </div>
+  </form>
+</section>
+{% endblock %}

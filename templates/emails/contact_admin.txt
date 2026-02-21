@@ -1,0 +1,14 @@
+New Contact Message — Portfolio
+================================
+
+From:    {{ name }} <{{ email }}>
+Subject: {{ subject }}
+Time:    {{ received_at }}
+
+Message:
+--------
+{{ message }}
+
+---
+Reply: mailto:{{ email }}
+Dashboard: {{ site_url }}/dashboard/

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{% if is_create %}Add Skill{% else %}Edit Skill{% endif %}{% endblock %}
+{% block content %}
+<section class="section container narrow reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard</span>
+    <h1>{% if is_create %}Add New Skill{% else %}Edit "{{ skill.name }}"{% endif %}</h1>
+    <p>Level should be 0–100 (percentage shown on skill bars).</p>
+  </div>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="display:flex; gap:10px; margin-top:14px;">
+      <button class="btn" type="submit">{% if is_create %}Add Skill{% else %}Save Changes{% endif %}</button>
+      <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "emails/base_email.html" %}
+{% block subject %}Re: {{ subject }}{% endblock %}
+{% block email_content %}
+
+<div class="header">
+  <p class="header-brand">Kothapalem Satheesh · Portfolio</p>
+  <h1>✉️ Reply from Satheesh</h1>
+</div>
+
+<div class="body">
+  <p class="lead">Hi <strong>{{ name }}</strong>,</p>
+  <p>Thanks for getting in touch. Here's my reply to your message:</p>
+
+  <hr class="divider" />
+
+  <div class="message-box">{{ reply_body }}</div>
+
+  <hr class="divider" />
+
+  <p style="font-size:13px; color:#484f58;">
+    — In reply to your original message:
+  </p>
+  <div class="message-box" style="opacity:.6; font-size:13px; margin-top:8px;">
+    <strong>Subject:</strong> {{ subject }}<br /><br />
+    {{ original }}
+  </div>
+
+  <div class="btn-wrap" style="margin-top:28px;">
+    <a class="btn" href="{{ site_url }}/contact/">Send Another Message</a>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Kothapalem Satheesh · AI/ML Student & Django Developer · Punjab, India</p>
+  <p style="margin-top:6px;">
+    <a href="{{ site_url }}/projects/">Projects</a> ·
+    <a href="{{ site_url }}/blog/">Blog</a> ·
+    <a href="{{ site_url }}/contact/">Contact</a>
+  </p>
+</div>
+
+{% endblock %}

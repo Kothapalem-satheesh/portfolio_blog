@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard – Manage Your Portfolio{% endblock %}
+{% block content %}
+
+<section class="section container">
+  <div class="section-head">
+    <span class="section-label">Staff Only</span>
+    <h1>Dashboard</h1>
+    <p>Manage your blog, projects, skills, and comments — all from here.</p>
+  </div>
+
+  {# ── Stats row ── #}
+  <div class="kpi-grid" style="margin-bottom:40px;">
+    <article class="card kpi">
+      <p class="kpi-number">{{ published_count }}</p>
+      <p>Published Posts</p>
+    </article>
+    <article class="card kpi">
+      <p class="kpi-number">{{ draft_count }}</p>
+      <p>Drafts</p>
+    </article>
+    <article class="card kpi" style="cursor:pointer;" onclick="location.href='{% url 'subscribers_list' %}'">
+      <p class="kpi-number">{{ subscriber_count }}</p>
+      <p>Active Subscribers</p>
+    </article>
+    <article class="card kpi">
+      <p class="kpi-number">{{ pending_comments }}</p>
+      <p>Pending Comments</p>
+    </article>
+    <article class="card kpi">
+      <p class="kpi-number">{{ project_count }}</p>
+      <p>Projects</p>
+    </article>
+    <article class="card kpi" style="cursor:pointer;" onclick="location.href='{% url 'messages_inbox' %}'">
+      <p class="kpi-number">{{ unread_messages }}</p>
+      <p>Unread Messages</p>
+    </article>
+  </div>
+
+  {# ── Quick actions ── #}
+  <div class="dash-actions">
+    <a class="btn" href="{% url 'blog_create' %}">✏️ Write New Post</a>
+    <a class="btn btn-secondary" href="{% url 'project_create' %}">➕ Add Project</a>
+    <a class="btn btn-secondary" href="{% url 'skill_create' %}">🎯 Add Skill</a>
+    <a class="btn btn-secondary" href="{% url 'profile_edit' %}">👤 Edit Profile</a>
+    <a class="btn btn-secondary" href="{% url 'messages_inbox' %}">
+      📬 Messages{% if unread_messages %} ({{ unread_messages }}){% endif %}
+    </a>
+    <a class="btn btn-secondary" href="{% url 'subscribers_list' %}">
+      👥 Subscribers ({{ subscriber_count }})
+    </a>
+  </div>
+</section>
+
+<hr class="divider container" />
+
+{# ── Blog posts ── #}
+<section class="section container">
+  <div class="section-head">
+    <h2>Blog Posts</h2>
+    <p>Edit or delete your existing posts.</p>
+  </div>
+  {% if recent_posts %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in recent_posts %}
+            <tr>
+              <td><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></td>
+              <td>
+                <span class="status-badge {% if post.status == 'published' %}published{% else %}draft{% endif %}">
+                  {{ post.status }}
+                </span>
+              </td>
+              <td>{{ post.created_at|date:"M d, Y" }}</td>
+              <td class="dash-row-actions">
+                <a class="dash-btn" href="{% url 'blog_edit' post.slug %}">Edit</a>
+                {% if post.status == 'published' %}
+                  <a class="dash-btn" href="{% url 'notify_subscribers' post.pk %}"
+                     title="Send email to all active subscribers"
+                     style="border-color:rgba(34,195,255,.4); color:var(--brand-2);">
+                    📧 Notify
+                  </a>
+                {% endif %}
+                <a class="dash-btn danger" href="{% url 'blog_delete' post.slug %}">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No posts yet. <a href="{% url 'blog_create' %}">Write your first post →</a></p>
+  {% endif %}
+</section>
+
+<hr class="divider container" />
+
+{# ── Pending comments ── #}
+<section class="section container">
+  <div class="section-head">
+    <h2>Pending Comments</h2>
+    <p>Approve or reject comments waiting for moderation.</p>
+  </div>
+  {% if pending_comment_list %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Author</th>
+            <th>Post</th>
+            <th>Comment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in pending_comment_list %}
+            <tr>
+              <td>{{ c.author.username }}</td>
+              <td><a href="{{ c.post.get_absolute_url }}">{{ c.post.title|truncatechars:40 }}</a></td>
+              <td>{{ c.body|truncatechars:80 }}</td>
+              <td class="dash-row-actions">
+                <form method="post" action="{% url 'comment_approve' c.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button class="dash-btn" type="submit">Approve</button>
+                </form>
+                <form method="post" action="{% url 'comment_delete' c.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{% url 'dashboard' %}" />
+                  <button class="dash-btn danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="color:var(--muted);">No pending comments. 🎉</p>
+  {% endif %}
+</section>
+
+<hr class="divider container" />
+
+{# ── Projects ── #}
+<section class="section container">
+  <div class="section-head">
+    <h2>Projects</h2>
+    <p><a class="btn btn-secondary" href="{% url 'project_create' %}" style="font-size:.85rem; padding:6px 14px;">➕ Add Project</a></p>
+  </div>
+  {% if projects %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>Title</th><th>Tech</th><th>Featured</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for p in projects %}
+            <tr>
+              <td>{{ p.title }}</td>
+              <td>{{ p.tech_stack|default:"—" }}</td>
+              <td>{% if p.featured %}⭐{% else %}–{% endif %}</td>
+              <td class="dash-row-actions">
+                <a class="dash-btn" href="{% url 'project_edit' p.pk %}">Edit</a>
+                <a class="dash-btn danger" href="{% url 'project_delete' p.pk %}">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No projects yet. <a href="{% url 'project_create' %}">Add one →</a></p>
+  {% endif %}
+</section>
+
+<hr class="divider container" />
+
+{# ── Recent Messages ── #}
+<section class="section container">
+  <div class="section-head">
+    <h2>Recent Messages</h2>
+    <p>
+      Latest contact form submissions.
+      <a href="{% url 'messages_inbox' %}" style="margin-left:8px;">View all →</a>
+    </p>
+  </div>
+  {% if recent_messages %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>From</th><th>Subject</th><th>Received</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for m in recent_messages %}
+            <tr>
+              <td>
+                {{ m.name }}
+                {% if not m.is_read %}<span class="status-badge published" style="font-size:.65rem; margin-left:6px;">New</span>{% endif %}
+              </td>
+              <td>{{ m.subject|truncatechars:50 }}</td>
+              <td>{{ m.created_at|date:"M d, Y" }}</td>
+              <td class="dash-row-actions">
+                <a class="dash-btn" href="{% url 'message_reply' m.pk %}">Reply</a>
+                <form method="post" action="{% url 'message_delete' m.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button class="dash-btn danger" type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="color:var(--muted);">No messages yet.</p>
+  {% endif %}
+</section>
+
+<hr class="divider container" />
+
+{# ── Skills ── #}
+<section class="section container">
+  <div class="section-head">
+    <h2>Skills</h2>
+    <p><a class="btn btn-secondary" href="{% url 'skill_create' %}" style="font-size:.85rem; padding:6px 14px;">🎯 Add Skill</a></p>
+  </div>
+  {% if skills %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr><th>Skill</th><th>Category</th><th>Level</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for s in skills %}
+            <tr>
+              <td>{{ s.name }}</td>
+              <td>{{ s.category|default:"—" }}</td>
+              <td>{{ s.level }}%</td>
+              <td class="dash-row-actions">
+                <a class="dash-btn" href="{% url 'skill_edit' s.pk %}">Edit</a>
+                <a class="dash-btn danger" href="{% url 'skill_delete' s.pk %}">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p>No skills yet. <a href="{% url 'skill_create' %}">Add one →</a></p>
+  {% endif %}
+</section>
+
+{% endblock %}

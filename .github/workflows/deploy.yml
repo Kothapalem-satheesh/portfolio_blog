@@ -1,0 +1,21 @@
+name: Deploy to Render
+
+# Render watches your GitHub repo directly.
+# Every push to main auto-deploys via the Render GitHub integration.
+# This workflow just confirms the deploy was triggered.
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    name: Deploy triggered
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm deploy pushed to Render
+        run: |
+          echo "✅ Push to main detected."
+          echo "Render will auto-deploy from GitHub automatically."
+          echo "Check your deploy at: https://dashboard.render.com"

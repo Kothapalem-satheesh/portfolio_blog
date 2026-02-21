@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Messages Inbox – Dashboard{% endblock %}
+{% block content %}
+<section class="section container reveal">
+  <div class="section-head">
+    <span class="section-label">Dashboard</span>
+    <h1>Messages Inbox</h1>
+    <p>All contact form submissions from your portfolio site.</p>
+  </div>
+  <div style="margin-bottom:20px;">
+    <a class="btn btn-secondary" href="{% url 'dashboard' %}">← Back to Dashboard</a>
+  </div>
+
+  {% if contact_messages %}
+    <div class="messages-list">
+      {% for msg in contact_messages %}
+        <article class="message-card reveal {% if not msg.is_read %}unread{% endif %}">
+          <div class="message-card-header">
+            <div>
+              <span class="message-sender">{{ msg.name }}</span>
+              <span class="message-email">&lt;{{ msg.email }}&gt;</span>
+              {% if not msg.is_read %}
+                <span class="status-badge published" style="font-size:.68rem; padding:2px 7px;">New</span>
+              {% endif %}
+            </div>
+            <span class="message-date">{{ msg.created_at|date:"M d, Y · H:i" }}</span>
+          </div>
+          <p class="message-subject">{{ msg.subject }}</p>
+          <div class="message-body">{{ msg.message|linebreaks }}</div>
+          <div class="message-actions">
+            <a class="btn" href="{% url 'message_reply' msg.pk %}"
+               style="font-size:.83rem; padding:8px 16px;">
+              ✉ Reply
+            </a>
+            <form method="post" action="{% url 'message_delete' msg.pk %}" style="display:inline;">
+              {% csrf_token %}
+              <button class="dash-btn danger" type="submit"
+                      onclick="return confirm('Delete this message?')">
+                🗑 Delete
+              </button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card" style="text-align:center; padding:56px 32px;">
+      <p style="font-size:2rem; margin-bottom:12px;">📭</p>
+      <p>No messages yet. Share your portfolio and they'll show up here.</p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

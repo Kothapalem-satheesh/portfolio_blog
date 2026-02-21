@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Blog – Kothapalem Satheesh{% endblock %}
+{% block content %}
+<section class="section container reveal">
+  <div style="display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+    <div class="section-head" style="margin-bottom:0;">
+      <span class="section-label">Writing</span>
+      <h1 class="gradient-text">Blog</h1>
+      <p>Articles on AI/ML practice, Django backend engineering, and developer insights.</p>
+    </div>
+    <div class="lottie-wrap" style="width:140px; height:140px; flex-shrink:0;">
+      <lottie-player
+        src="https://lottie.host/8db8c7e7-db7f-49b7-886b-17d28f1c6b16/oP0dNi1MWz.json"
+        background="transparent" speed="1" loop autoplay
+        style="width:140px; height:140px;">
+      </lottie-player>
+    </div>
+  </div>
+
+  {% if user.is_staff %}
+    <p style="margin-bottom:24px;"><a class="btn" href="{% url 'blog_create' %}">✏️ Write New Post</a></p>
+  {% endif %}
+
+  {% if posts %}
+
+    {# ── Featured / latest post as hero card ── #}
+    {% with posts.0 as featured %}
+      <a href="{{ featured.get_absolute_url }}" class="blog-featured reveal" style="text-decoration:none;">
+        {% if featured.cover_image %}
+          <div class="blog-featured-img">
+            <img src="{{ featured.cover_image.url }}" alt="{{ featured.title }}" />
+          </div>
+        {% else %}
+          <div class="blog-featured-img blog-featured-placeholder">✍️</div>
+        {% endif %}
+        <div class="blog-featured-body">
+          <p class="blog-featured-label">
+            ✦ Latest Post
+            {% if featured.category %} · {{ featured.category.name }}{% endif %}
+          </p>
+          <h2>{{ featured.title }}</h2>
+          <p>{{ featured.excerpt|default:featured.content|truncatewords:40 }}</p>
+          <div class="blog-featured-footer">
+            <small>{{ featured.published_at|date:"F d, Y" }}</small>
+            <span class="card-source">Read article →</span>
+          </div>
+        </div>
+      </a>
+    {% endwith %}
+
+    {# ── Category filter pills ── #}
+    {% if categories %}
+      <div class="category-bar" id="category-bar">
+        <button class="filter-btn active" data-cat="all">All Posts</button>
+        {% for cat in categories %}
+          <button class="filter-btn" data-cat="{{ cat.slug }}">{{ cat.name }}</button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# ── Rest of posts grid (skip first, shown as featured) ── #}
+    <div class="blog-grid" id="blog-grid">
+      {% for post in posts %}
+        <article class="blog-card reveal" data-cat="{% if post.category %}{{ post.category.slug }}{% endif %}">
+          {% if post.cover_image %}
+            <a href="{{ post.get_absolute_url }}">
+              <div class="blog-card-img">
+                <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" />
+              </div>
+            </a>
+          {% else %}
+            <div class="blog-card-img" style="background:linear-gradient(135deg,rgba(34,195,255,.06),rgba(109,125,255,.08)); display:flex; align-items:center; justify-content:center; font-size:2rem; color:var(--muted);">✍️</div>
+          {% endif %}
+          <div class="blog-card-body">
+            {% if post.category %}
+              <span class="tech-tag" style="margin-bottom:8px; display:inline-block;">{{ post.category.name }}</span>
+            {% endif %}
+            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+            <p>{{ post.excerpt|default:post.content|truncatewords:25 }}</p>
+            <div class="blog-card-footer">
+              <span style="display:flex; align-items:center; gap:8px;">
+                <small>{{ post.published_at|date:"M d, Y" }}</small>
+                <span class="read-time">· ⏱ {{ post.content|wordcount|divisibleby:200|yesno:"1,1" }} min read</span>
+              </span>
+              <a class="card-source" href="{{ post.get_absolute_url }}">Read →</a>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="card" style="text-align:center; padding: 56px 32px;">
+      <p style="font-size:2rem; margin-bottom:12px;">✍️</p>
+      <p>No posts yet — I'll be writing about AI, ML, and Django soon.</p>
+      <a class="btn btn-secondary" href="{% url 'subscribe' %}" style="margin-top:16px; display:inline-flex;">Get notified</a>
+    </div>
+  {% endif %}
+</section>
+
+<script>
+(function(){
+  const btns  = document.querySelectorAll("#category-bar .filter-btn");
+  const cards = document.querySelectorAll("#blog-grid .blog-card");
+  if (!btns.length) return;
+  btns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const cat = btn.dataset.cat;
+      cards.forEach(card => {
+        card.style.display = (cat === "all" || card.dataset.cat === cat) ? "" : "none";
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}

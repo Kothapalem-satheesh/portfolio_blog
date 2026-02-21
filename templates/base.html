@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Kothapalem Satheesh – AI/ML Student, Django Developer, Python Engineer based in Punjab, India." />
+    <meta name="keywords" content="AI, Machine Learning, Django, Python, Portfolio, Kothapalem Satheesh" />
+    <meta property="og:title" content="Kothapalem Satheesh | Portfolio" />
+    <meta property="og:description" content="AI/ML Student & Django Developer — building intelligent web products." />
+    <title>{% block title %}Kothapalem Satheesh | Portfolio{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <script defer src="{% static 'js/three-hero.js' %}"></script>
+    <script defer src="{% static 'js/chat-widget.js' %}"></script>
+    <script defer src="{% static 'js/main.js' %}"></script>
+    <script defer src="{% static 'js/animations.js' %}"></script>
+  </head>
+  <body>
+
+    {# Scroll progress bar #}
+    <div id="scroll-progress"></div>
+    {# Cursor glow trail #}
+    <div id="cursor-trail"></div>
+
+    <header class="site-header">
+      <nav class="container nav">
+        <div class="nav-brand">
+          {% if site_profile.photo and site_profile.photo.url %}
+            <img class="nav-avatar" src="{{ site_profile.photo.url }}" alt="{{ site_profile.full_name }}" />
+          {% else %}
+            <img class="nav-avatar" src="{% static 'images/profile-photo.png' %}" alt="Satheesh" />
+          {% endif %}
+          <a href="{% url 'home' %}" class="logo">{{ site_profile.full_name|default:"Satheesh" }}</a>
+        </div>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
+          <a href="{% url 'home' %}" data-path="/">Home</a>
+          <a href="{% url 'about' %}" data-path="/about/">About</a>
+          <a href="{% url 'projects' %}" data-path="/projects/">Projects</a>
+          <a href="{% url 'blog_list' %}" data-path="/blog/">Blog</a>
+          <a href="{% url 'contact' %}" data-path="/contact/">Contact</a>
+          <a class="nav-pill" href="{% url 'subscribe' %}">Subscribe</a>
+          {% if user.is_authenticated %}
+            {% if user.is_staff %}
+              <a class="nav-pill" href="{% url 'dashboard' %}" style="background:rgba(109,125,255,.18); border-color:rgba(109,125,255,.4); color:var(--brand);">⚙ Dashboard</a>
+            {% endif %}
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="nav-logout-btn">Logout</button>
+            </form>
+          {% else %}
+            <a href="{% url 'login' %}">Login</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+
+    {% if messages %}
+      <div class="container flash-stack">
+        {% for message in messages %}
+          <p class="flash {% if message.tags == 'error' %}error{% endif %}{% if message.tags == 'warning' %} warning{% endif %}">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-inner">
+          <div>
+            <p class="footer-title">{{ site_profile.full_name|default:"Kothapalem Satheesh" }}</p>
+            <p class="footer-sub" style="margin-bottom:6px;">
+              {{ site_profile.title|default:"AI/ML Student &amp; Django Developer" }} · Punjab, India
+            </p>
+            <p class="footer-sub">{{ site_profile.email|default:"" }}</p>
+            {# Inline subscribe form in footer #}
+            <form class="footer-subscribe" action="{% url 'subscribe' %}" method="post" id="footer-sub-form">
+              {% csrf_token %}
+              <input type="email" name="email" placeholder="Your email for blog updates…" required />
+              <button type="submit">Subscribe →</button>
+            </form>
+          </div>
+          <div>
+            <p class="footer-sub" style="font-weight:600; color:var(--text); margin-bottom:10px;">Links</p>
+            <div class="footer-links" style="flex-direction:column; gap:8px;">
+              <a href="{% url 'home' %}">Home</a>
+              <a href="{% url 'about' %}">About</a>
+              <a href="{% url 'projects' %}">Projects</a>
+              <a href="{% url 'blog_list' %}">Blog</a>
+              <a href="{% url 'contact' %}">Contact</a>
+            </div>
+          </div>
+          <div>
+            <p class="footer-sub" style="font-weight:600; color:var(--text); margin-bottom:10px;">Connect</p>
+            <div class="footer-links" style="flex-direction:column; gap:8px;">
+              {% if site_profile.github_url %}
+                <a href="{{ site_profile.github_url }}" target="_blank" rel="noreferrer">GitHub</a>
+              {% endif %}
+              {% if site_profile.linkedin_url %}
+                <a href="{{ site_profile.linkedin_url }}" target="_blank" rel="noreferrer">LinkedIn</a>
+              {% endif %}
+              {% if site_profile.twitter_url %}
+                <a href="{{ site_profile.twitter_url }}" target="_blank" rel="noreferrer">X / Twitter</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <hr class="divider" style="margin: 24px 0 16px;" />
+        <p class="footer-sub" style="text-align:center;">&copy; {% now "Y" %} {{ site_profile.full_name|default:"Portfolio" }}. Built with Django, Three.js &amp; ❤</p>
+      </div>
+    </footer>
+
+    {# Back to top #}
+    <button id="back-to-top" aria-label="Back to top">↑</button>
+
+  </body>
+</html>

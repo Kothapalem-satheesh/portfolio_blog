@@ -1,0 +1,17 @@
+Kothapalem Satheesh — New Blog Post
+====================================
+
+{{ post.title }}
+{% if post.category %}Category: {{ post.category.name }}{% endif %}
+
+{{ post.excerpt|default:post.content|truncatewords:60 }}
+
+Read the full article:
+{{ post_url }}
+
+---
+Browse all posts: {{ site_url }}/blog/
+Unsubscribe: {{ unsubscribe_url }}
+
+Kothapalem Satheesh · AI/ML Student & Django Developer
+{{ site_url }}
