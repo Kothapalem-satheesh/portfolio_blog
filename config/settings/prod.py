@@ -20,6 +20,9 @@ else:
             "LOCATION": "prod-cache",
         }
     }
+    # No Redis → run Celery tasks synchronously so emails send immediately
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
 
 # ── Security ────────────────────────────────────────────────────
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

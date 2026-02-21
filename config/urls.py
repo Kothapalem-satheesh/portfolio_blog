@@ -21,5 +21,7 @@ urlpatterns = [
     ),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files in all environments.
+# On Render free tier there is no cloud storage, so gunicorn must serve them.
+# (For a high-traffic site, replace this with S3/Cloudinary.)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

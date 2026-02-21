@@ -33,7 +33,7 @@
           {% if site_profile.photo and site_profile.photo.url %}
             <img class="nav-avatar" src="{{ site_profile.photo.url }}" alt="{{ site_profile.full_name }}" />
           {% else %}
-            <img class="nav-avatar" src="{% static 'images/profile-photo.png' %}" alt="Satheesh" />
+            <span class="nav-avatar nav-avatar-initials">S</span>
           {% endif %}
           <a href="{% url 'home' %}" class="logo">{{ site_profile.full_name|default:"Satheesh" }}</a>
         </div>
