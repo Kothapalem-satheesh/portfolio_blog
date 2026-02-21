@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    entrypoint: ["/bin/sh", "/app/docker/entrypoint.sh"]
+    volumes:
+      - .:/app
+      - media:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/portfolio"
+      REDIS_URL: "redis://redis:6379/0"
+      CACHE_BACKEND: "redis"
+      CELERY_TASK_ALWAYS_EAGER: "False"
+      SITE_BASE_URL: "http://127.0.0.1:8000"
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build: .
+    command: celery -A config worker -l info
+    entrypoint: ["/bin/sh", "/app/docker/entrypoint.sh"]
+    volumes:
+      - .:/app
+      - media:/app/media
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: "127.0.0.1,localhost"
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/portfolio"
+      REDIS_URL: "redis://redis:6379/0"
+      CACHE_BACKEND: "redis"
+      CELERY_TASK_ALWAYS_EAGER: "False"
+      SITE_BASE_URL: "http://127.0.0.1:8000"
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  pgdata:
+  media:
+
