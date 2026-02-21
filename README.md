@@ -1,4 +1,4 @@
-# Django Portfolio Website (Production Ready)
+# Django Portfolio Website
 
 Modern portfolio platform built with Django, HTML/CSS/JS, Three.js visuals, blog publishing, signed-in comments, subscriber email notifications, and OpenAI chatbot.
 
