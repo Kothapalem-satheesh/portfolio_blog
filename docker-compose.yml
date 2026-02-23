@@ -21,7 +21,7 @@ services:
     entrypoint: ["python", "/app/docker/entrypoint.py"]
     volumes:
       - .:/app
-      - media:/app/media
+      - ./media:/app/media
     ports:
       - "8000:8000"
     environment:
@@ -33,6 +33,12 @@ services:
       CACHE_BACKEND: "redis"
       CELERY_TASK_ALWAYS_EAGER: "False"
       SITE_BASE_URL: "http://127.0.0.1:8000"
+      RUN_MIGRATIONS: "True"
+      AUTO_CREATE_SUPERUSER: "True"
+      DJANGO_SUPERUSER_USERNAME: "admin"
+      DJANGO_SUPERUSER_EMAIL: "admin@example.com"
+      DJANGO_SUPERUSER_PASSWORD: "admin12345"
+      AUTO_RESET_SUPERUSER_PASSWORD: "True"
     depends_on:
       - db
       - redis
@@ -43,7 +49,7 @@ services:
     entrypoint: ["python", "/app/docker/entrypoint.py"]
     volumes:
       - .:/app
-      - media:/app/media
+      - ./media:/app/media
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.dev
       DJANGO_DEBUG: "True"
@@ -53,11 +59,17 @@ services:
       CACHE_BACKEND: "redis"
       CELERY_TASK_ALWAYS_EAGER: "False"
       SITE_BASE_URL: "http://127.0.0.1:8000"
+      RUN_MIGRATIONS: "False"
+      AUTO_CREATE_SUPERUSER: "True"
+      DJANGO_SUPERUSER_USERNAME: "admin"
+      DJANGO_SUPERUSER_EMAIL: "admin@example.com"
+      DJANGO_SUPERUSER_PASSWORD: "admin12345"
+      AUTO_RESET_SUPERUSER_PASSWORD: "True"
     depends_on:
       - db
       - redis
 
 volumes:
   pgdata:
-  media:
+  # media is bind-mounted from ./media
 
